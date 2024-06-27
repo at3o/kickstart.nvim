@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -166,6 +166,10 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- a3o foldmethod
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -204,6 +208,43 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- a3o added:
+--  Simple TODO
+vim.keymap.set('i', '<M-[>', '[ ] ', { silent = true })
+vim.keymap.set('n', '<leader>i', 'i[ ] ', { silent = true })
+vim.keymap.set('n', '<leader>I', 'I[ ] ', { silent = true })
+vim.keymap.set('n', '<leader>O', 'O[ ] ', { silent = true })
+vim.keymap.set('n', '<leader>o', 'o[ ] ', { silent = true })
+vim.keymap.set('n', '<leader>x', [[:s/[ ]/x/<CR>]], { silent = true })
+vim.keymap.set('n', '<leader>X', [[:s/[x]/ /<CR>]], { silent = true })
+
+-- Keymaps for better default experience
+-- See `:help vim.keymap.set()`
+vim.keymap.set('v', '>', '>gv', { silent = true })
+vim.keymap.set('v', '<', '<gv', { silent = true })
+
+-- text formatting at 80 chars
+vim.keymap.set('n', 'Q', 'gqap', { silent = true })
+vim.keymap.set('v', 'Q', 'gq', { silent = true })
+
+-- Simple-replace
+vim.keymap.set('v', '<C-r>', '"hy:%s/<C-r>h//gc<left><left><left>', { silent = true })
+
+-- Tabs
+vim.keymap.set('n', '<C-t>', ':tabnew %<CR>', { silent = true })
+vim.keymap.set('n', '<C-l>', ':tabnext<CR>', { silent = true })
+vim.keymap.set('n', '<C-h>', ':tabprevious<CR>', { silent = true })
+vim.keymap.set('i', '<C-l>', '<C-O>:tabnext<CR>', { silent = true })
+vim.keymap.set('i', '<C-h>', '<C-O>:tabprevious<CR>', { silent = true })
+
+-- left and right one word
+vim.keymap.set({ 'n', 'v', 'i' }, '<A-l>', '<S-Right>', { silent = true })
+vim.keymap.set({ 'n', 'v', 'i' }, '<A-h>', '<S-Left>', { silent = true })
+
+-- a3o added: abbreviations
+vim.cmd 'iab fff # vim:fileencoding=utf-8:foldmethod=marker'
+vim.cmd 'iab ttt # vim: ts=4 sts=4 sw=4 et'
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -769,7 +810,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -799,12 +840,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -836,6 +877,11 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
+        mapping = cmp.mapping.preset.insert {
+          -- Select the [n]ext item
+          ['<C-j>'] = cmp.mapping.select_next_item(),
+          -- Select the [p]revious item
+          ['<C-k>'] = cmp.mapping.select_prev_item(),
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -874,6 +920,23 @@ require('lazy').setup({
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
+        sources = {
+          {
+            name = 'lazydev',
+            -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
+            group_index = 0,
+          },
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+          { name = 'nvim_lsp_signature_help' },
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+      }
+    end,
   },
 
   { -- You can easily change to a different colorscheme.
@@ -895,6 +958,9 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+
+      -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
     end,
   },
 
@@ -974,11 +1040,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
