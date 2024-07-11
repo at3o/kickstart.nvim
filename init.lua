@@ -164,6 +164,10 @@ vim.opt.confirm = true
 vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 
+-- a30 spell settings
+vim.opt.spell = false
+vim.opt.spelllang = { 'en_us' }
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -204,8 +208,14 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- a3o added:
+-- enable and disable spell
+vim.keymap.set('n', '<leader>Sy', ':setlocal spell<CR>', { silent = true })
+vim.keymap.set('n', '<leader>Sn', ':setlocal nospell<CR>', { silent = true })
+vim.keymap.set('n', '<leader>Se', ':setlocal spelllang=en_us<CR>', { silent = true })
+vim.keymap.set('n', '<leader>Si', ':setlocal spelllang=it<CR>', { silent = true })
+
 --  Simple TODO
-vim.keymap.set('i', '<M-[>', '[ ] ', { silent = true })
+vim.keymap.set('i', '<M-i>', '[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>i', 'i[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>I', 'I[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>O', 'O[ ] ', { silent = true })
@@ -439,11 +449,17 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          --   mappings = {
+          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          --   },
+          border = {},
+          borderchars = {
+            prompt = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+            results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+            preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -703,10 +719,10 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        pyright = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -745,7 +761,7 @@ require('lazy').setup({
       --
       require('mason').setup {
         ui = {
-          border = 'rounded',
+          border = 'single',
         },
       }
 
@@ -871,6 +887,8 @@ require('lazy').setup({
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-nvim-lsp-signature-help',
       -- a3o added:
+      'hrsh7th/cmp-buffer',
+      'f3fora/cmp-spell',
       'onsails/lspkind-nvim',
     },
     config = function()
@@ -953,12 +971,20 @@ require('lazy').setup({
           },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
+          { name = 'buffer' },
           { name = 'path' },
           { name = 'nvim_lsp_signature_help' },
+          { name = 'spell' },
         },
         window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
+          completion = {
+            border = 'single',
+            scrollbar = '║',
+          },
+          documentation = {
+            border = 'single',
+            scrollbar = '║',
+          },
         },
         -- a3o changed: lskind
         formatting = {
@@ -1094,7 +1120,7 @@ require('lazy').setup({
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
-    border = 'rounded',
+    border = 'single',
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
@@ -1115,5 +1141,7 @@ require('lazy').setup({
   },
 })
 
+-- Add border to LsInfo
+require('lspconfig.ui.windows').default_options.border = 'single'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
