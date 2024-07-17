@@ -93,6 +93,21 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- a3o Configure providers
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+local home = os.getenv('HOME')
+vim.env.PYENV_VERSION = vim.fn.system('pyenv version'):match '(%S+)%s+%(.-%)'
+vim.g.python3_host_prog = home .. '/.pyenv/shims/python3'
+
+-- Get current node default node version
+local nvm_bin = os.getenv 'NVM_BIN'
+
+if nvm_bin then
+  vim.g.node_host_prog = nvm_bin .. '/neovim-node-host'
+end
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
