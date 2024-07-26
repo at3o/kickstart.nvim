@@ -97,12 +97,12 @@ vim.g.have_nerd_font = true
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
-local home = os.getenv('HOME')
+local home = os.getenv 'HOME'
 vim.env.PYENV_VERSION = vim.fn.system('pyenv version'):match '(%S+)%s+%(.-%)'
 vim.g.python3_host_prog = home .. '/.pyenv/shims/python3'
 
 -- Get current node default node version
-local nvm_bin = os.getenv 'NVM_BIN'
+local nvm_bin = os.getenv 'NVM_DEFAULT_BIN'
 
 if nvm_bin then
   vim.g.node_host_prog = nvm_bin .. '/neovim-node-host'
@@ -241,8 +241,8 @@ vim.keymap.set('n', '<leader>i', 'i[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>I', 'I[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>O', 'O[ ] ', { silent = true })
 vim.keymap.set('n', '<leader>o', 'o[ ] ', { silent = true })
-vim.keymap.set('n', '<leader>x', [[:s/[ ]/x/<CR>]], { silent = true })
-vim.keymap.set('n', '<leader>X', [[:s/[x]/ /<CR>]], { silent = true })
+vim.keymap.set('n', '<leader>x', [[:s/\[ \]/\[x\]/<CR>]], { silent = true })
+vim.keymap.set('n', '<leader>X', [[:s/\[x\]/\[ \]/<CR>]], { silent = true })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
