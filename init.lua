@@ -98,11 +98,11 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 local home = os.getenv 'HOME'
-vim.env.PYENV_VERSION = vim.fn.system('pyenv version'):match '(%S+)%s+%(.-%)'
-vim.g.python3_host_prog = home .. '/.pyenv/shims/python3'
+-- vim.env.PYENV_VERSION = vim.fn.system('pyenv version'):match '(%S+)%s+%(.-%)'
+vim.g.python3_host_prog = home .. '/.pyenv/versions/py3nvim/bin/python'
 
 -- Get current node default node version
-local nvm_bin = os.getenv 'NVM_DEFAULT_BIN'
+local nvm_bin = os.getenv 'NVM_LTS_BIN'
 
 if nvm_bin then
   vim.g.node_host_prog = nvm_bin .. '/neovim-node-host'
@@ -850,7 +850,10 @@ require('lazy').setup({
         python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettier', 'prettierd', stop_after_first = true },
+        typescript = { 'prettier', 'prettierd', stop_after_first = true },
+        typescriptreact = { 'prettier', 'prettierd', stop_after_first = true },
+        javascriptreact = { 'prettier', 'prettierd', stop_after_first = true },
       },
     },
   },
