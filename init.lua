@@ -300,6 +300,27 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+-- Custom functions [a3o]
+local select_one_or_multi = function(prompt_bufnr)
+  local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+  local multi = picker:get_multi_selection()
+  if not vim.tbl_isempty(multi) then
+    require('telescope.actions').close(prompt_bufnr)
+    for _, j in pairs(multi) do
+      if j.path ~= nil then
+        if j.lnum ~= nil then
+          vim.cmd(string.format('%s +%s %s', 'edit', j.lnum, j.path))
+        else
+          vim.cmd(string.format('%s %s', 'edit', j.path))
+        end
+      end
+    end
+  else
+    require('telescope.actions').select_default(prompt_bufnr)
+  end
+end
+-- end custom functions
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -474,9 +495,9 @@ require('lazy').setup({
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
-          --   mappings = {
-          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-          --   },
+          mappings = {
+            i = { ['<CR>'] = select_one_or_multi },
+          },
           border = {},
           borderchars = {
             prompt = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
