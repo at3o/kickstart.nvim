@@ -319,6 +319,31 @@ local select_one_or_multi = function(prompt_bufnr)
     require('telescope.actions').select_default(prompt_bufnr)
   end
 end
+
+-- Function to insert CWD at cursor position and keymap
+local function insert_cwd()
+  local cwd = vim.fn.getcwd() -- Get the current working directory
+  local homedir = vim.fn.expand '~' -- Get the home directory
+  -- Replace $HOME with ~ if cwd starts with $HOME
+  if cwd:sub(1, #homedir) == home then
+    cwd = '~' .. cwd:sub(#homedir + 1)
+  end
+
+  vim.api.nvim_put({ cwd }, '', true, true) -- Insert the CWD at the cursor position
+end
+
+-- KEYMAP: <leader>+ic
+vim.keymap.set('n', '<leader>ic', insert_cwd, { noremap = true, silent = true, desc = 'Insert CWD at cursor' })
+
+-- KEYMAP: (n) gx
+vim.keymap.set('n', 'gx', function()
+  local file_path = vim.fn.expand '<cfile>'
+  if vim.fn.filereadable(file_path) == 1 then
+    vim.cmd('tabedit ' .. vim.fn.fnameescape(file_path)) -- Open file in a new tab
+  else
+    print('Not a valid file: ' .. file_path)
+  end
+end, { noremap = true, silent = true, desc = 'Open file under cursor in a new tab' })
 -- end custom functions
 
 -- [[ Configure and install plugins ]]
