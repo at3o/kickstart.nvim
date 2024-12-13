@@ -184,6 +184,9 @@ vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.spell = false
 vim.opt.spelllang = { 'en_us' }
 
+-- a3o set lastatus
+vim.opt.laststatus = 3
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
