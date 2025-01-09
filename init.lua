@@ -150,12 +150,7 @@ vim.opt.signcolumn = 'yes'
 vim.opt.updatetime = 250
 
 -- Decrease mapped sequence wait time
-<<<<<<< HEAD
 vim.opt.timeoutlen = 300
-=======
--- Displays which-key popup sooner
-vim.opt.timeoutlen = 301
->>>>>>> 436801f (changing providers)
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
