@@ -270,6 +270,15 @@ vim.keymap.set('i', '<C-h>', '<C-O>:tabprevious<CR>', { silent = true })
 vim.keymap.set({ 'n', 'v', 'i' }, '<A-l>', '<S-Right>', { silent = true })
 vim.keymap.set({ 'n', 'v', 'i' }, '<A-h>', '<S-Left>', { silent = true })
 
+-- mainstream copy mode. But it conflict with visual-block.
+-- Copy to system clipboard
+-- vim.keymap.set('v', '<C-c>', '"+y')
+
+-- Paste from system clipboard in normal mode
+-- vim.keymap.set('n', '<C-v>', '"+gP')
+-- Paste from system clipboard in insert mode
+-- vim.keymap.set('i', '<C-v>', '<C-r>+')
+
 -- a3o added: abbreviations
 vim.cmd 'iab fff # vim:fileencoding=utf-8:foldmethod=marker'
 vim.cmd 'iab ttt # vim: ts=4 sts=4 sw=4 et'
