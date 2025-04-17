@@ -192,6 +192,9 @@ vim.opt.spelllang = { 'en_us' }
 -- a3o set lastatus
 vim.opt.laststatus = 3
 
+-- set general winborder
+vim.opt.winborder = 'single'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -845,6 +848,7 @@ require('lazy').setup({
       -- `mason` had to be setup earlier: to configure its options see the
       -- `dependencies` table for `nvim-lspconfig` above.
       --
+      -- TODO: mason does not use general setting?
       require('mason').setup {
         ui = {
           border = 'single',
@@ -991,10 +995,9 @@ require('lazy').setup({
       },
 
       completion = {
-        menu = { border = 'single' },
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = true, auto_show_delay_ms = 500, window = { border = 'single' } },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
@@ -1016,7 +1019,7 @@ require('lazy').setup({
       fuzzy = { implementation = 'prefer_rust_with_warning' },
 
       -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true, window = { border = 'single' } },
+      signature = { enabled = true },
     },
   },
 
@@ -1136,6 +1139,7 @@ require('lazy').setup({
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
+    -- TODO does not support general config for borders?
     border = 'single',
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
@@ -1157,7 +1161,5 @@ require('lazy').setup({
   },
 })
 
--- Add border to LsInfo
-require('lspconfig.ui.windows').default_options.border = 'single'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
