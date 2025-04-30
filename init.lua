@@ -336,7 +336,7 @@ local select_one_or_multi = function(prompt_bufnr)
 end
 
 -- Function to insert CWD at cursor position and keymap
-local function insert_cwd()
+local function InsertCwd()
   local cwd = vim.fn.getcwd() -- Get the current working directory
   local homedir = vim.fn.expand '~' -- Get the home directory
   -- Replace $HOME with ~ if cwd starts with $HOME
@@ -347,18 +347,22 @@ local function insert_cwd()
   vim.api.nvim_put({ cwd }, '', true, true) -- Insert the CWD at the cursor position
 end
 
--- KEYMAP: <leader>+ic
-vim.keymap.set('n', '<leader>ic', insert_cwd, { noremap = true, silent = true, desc = 'Insert CWD at cursor' })
+vim.api.nvim_create_user_command('A3oInsertCwd', function()
+  local str = InsertCwd()
+  vim.api.nvim_put({ str }, 'c', true, true)
+end, {})
 
--- KEYMAP: (n) gx
-vim.keymap.set('n', 'gx', function()
-  local file_path = vim.fn.expand '<cfile>'
-  if vim.fn.filereadable(file_path) == 1 then
-    vim.cmd('tabedit ' .. vim.fn.fnameescape(file_path)) -- Open file in a new tab
-  else
-    print('Not a valid file: ' .. file_path)
-  end
-end, { noremap = true, silent = true, desc = 'Open file under cursor in a new tab' })
+function InsertFileAndLine()
+  local filename = vim.fn.expand '%:t'
+  local line = vim.fn.line '.'
+  return filename .. ':' .. line
+end
+
+vim.api.nvim_create_user_command('A3oPrintFileLine', function()
+  local str = InsertFileAndLine()
+  vim.api.nvim_put({ str }, 'c', true, true)
+end, {})
+
 -- end custom functions
 
 -- [[ Configure and install plugins ]]
