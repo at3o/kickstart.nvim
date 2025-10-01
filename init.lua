@@ -166,7 +166,8 @@ vim.o.splitbelow = true
 --   and `:help lua-options-guide`
 vim.o.list = true
 -- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-vim.opt_local.listchars = { tab = '▸ ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = ' ', trail = '·', nbsp = '␣' }
+-- vim.opt_local.listchars = { tab = '▸ ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -228,12 +229,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- a3o added:
 -- enable and disable spell
@@ -348,7 +343,7 @@ local function InsertCwd()
   vim.api.nvim_put({ cwd }, '', true, true) -- Insert the CWD at the cursor position
 end
 
-vim.api.nvim_create_user_command('A3oInsertCwd', function()
+vim.api.nvim_create_user_command('MineInsertCwd', function()
   local str = InsertCwd()
   vim.api.nvim_put({ str }, 'c', true, true)
 end, {})
@@ -359,7 +354,7 @@ function InsertFileAndLine()
   return filename .. ':' .. line
 end
 
-vim.api.nvim_create_user_command('A3oPrintFileLine', function()
+vim.api.nvim_create_user_command('MinePrintFileLine', function()
   local str = InsertFileAndLine()
   vim.api.nvim_put({ str }, 'c', true, true)
 end, {})
