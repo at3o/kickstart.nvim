@@ -354,6 +354,40 @@ function InsertFileAndLine()
   return filename .. ':' .. line
 end
 
+-- Nerd Font icons (pick others if you prefer)
+local icon_space = '' -- nf-oct-dot-fill
+local icon_tab = '⇥' -- tab symbol
+local icon_warn = '' -- nf-fa-warning
+
+local function indent_info()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local has_tabs, has_spaces = false, false
+
+  for _, l in ipairs(lines) do
+    if l:match '^ +' then
+      has_spaces = true
+    elseif l:match '^\t+' then
+      has_tabs = true
+    end
+    if has_tabs and has_spaces then
+      break
+    end
+  end
+
+  local setting
+  if vim.bo.expandtab then
+    setting = icon_space .. ' ' .. vim.bo.shiftwidth
+  else
+    setting = icon_tab .. ' ' .. vim.bo.tabstop
+  end
+
+  if has_tabs and has_spaces then
+    return icon_warn .. ' ' .. setting
+  else
+    return setting
+  end
+end
+
 vim.api.nvim_create_user_command('MinePrintFileLine', function()
   local str = InsertFileAndLine()
   vim.api.nvim_put({ str }, 'c', true, true)
@@ -1071,7 +1105,32 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup {
+        use_icons = vim.g.have_nerd_font,
+        content = {
+          active = function()
+            local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+            local git = MiniStatusline.section_git { trunc_width = 75 }
+            local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
+            local filename = MiniStatusline.section_filename { trunc_width = 140 }
+            local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+            local location = MiniStatusline.section_location { trunc_width = 75 }
+
+            -- Add our custom indent info here
+            local indent = indent_info()
+
+            return MiniStatusline.combine_groups {
+              { hl = mode_hl, strings = { mode } },
+              { hl = 'MiniStatuslineDevinfo', strings = { git, diagnostics } },
+              '%<', -- Mark general truncate point
+              { hl = 'MiniStatuslineFilename', strings = { filename } },
+              '%=', -- End left alignment
+              { hl = 'MiniStatuslineFileinfo', strings = { indent, fileinfo } },
+              { hl = mode_hl, strings = { location } },
+            }
+          end,
+        },
+      }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
